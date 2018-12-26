@@ -8,7 +8,7 @@ import (
 )
 
 func TestProgressBar(t *testing.T) {
-	setPg, _ := progressbar.New()
+	setPg, _ := progressbar.Render()
 	setPg(0.1256)
 	time.Sleep(time.Millisecond * 100)
 	setPg(0.2244)
