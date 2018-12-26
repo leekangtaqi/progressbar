@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-// New return set percent func and stop func.
-func New() (func(p float64), func()) {
+// Render render a progress bar and return set percent func and stop func.
+func Render() (func(p float64), func()) {
 	var (
 		done bool
 		pg   float64
