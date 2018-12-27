@@ -22,7 +22,7 @@ func NewRender(writer io.Writer, rate time.Duration) func(percent float64) error
 			return fmt.Errorf("percent %f invalid", pc)
 		}
 		// Render text and padding.
-		pl := 6 - len(strconv.Itoa(int(pc*1e+2))
+		pl := 6 - len(strconv.Itoa(int(pc*1e+2)))
 		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", pl))
 		// Render bar.
 		n := int(pc * 1e+2 / (float64(100) / float64(60)))
