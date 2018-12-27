@@ -12,7 +12,6 @@ import (
 // function to rerender progress bar.
 func NewRender(writer io.Writer, rate time.Duration) func(percent float64) {
 	var (
-		done bool
 		i    int
 		throttle = time.Tick(rate)
 	)
@@ -21,12 +20,6 @@ func NewRender(writer io.Writer, rate time.Duration) func(percent float64) {
 		<-throttle
 		if pc > 1 || pc < 0 {
 			panic(fmt.Errorf("percent %f invalid", pc))
-		}
-		if done {
-			return
-		}
-		if pc == 1 {
-			done = true
 		}
 		// Render text and padding.
 		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", 10))
