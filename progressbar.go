@@ -10,16 +10,16 @@ import (
 
 // NewRender receive custom writer and duration for throttle, returns render
 // function to rerender progress bar.
-func NewRender(writer io.Writer, rate time.Duration) func(percent float64) {
+func NewRender(writer io.Writer, rate time.Duration) func(percent float64) error {
 	var (
 		i    int
 		throttle = time.Tick(rate)
 	)
 
-	return func(pc float64) {
+	return func(pc float64) error {
 		<-throttle
 		if pc > 1 || pc < 0 {
-			panic(fmt.Errorf("percent %f invalid", pc))
+			return fmt.Errorf("percent %f invalid", pc)
 		}
 		// Render text and padding.
 		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", 10))
@@ -32,5 +32,6 @@ func NewRender(writer io.Writer, rate time.Duration) func(percent float64) {
 		// Render spinner.
 		io.WriteString(writer, str+fmt.Sprintf("] %c", `-\|/`[i%4]))
 		i++
+		return nil
 	}
 }
