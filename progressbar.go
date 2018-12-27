@@ -26,9 +26,9 @@ func NewRender(writer io.Writer, rate time.Duration) func(float64) error {
 		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", pl))
 		// Render bar.
 		n := int(pc * 1e+2 / (float64(100) / float64(60)))
-		str += fmt.Sprintf("[%s%s", strings.Repeat("█", n), strings.Repeat("-", 60-n))
+		str += fmt.Sprintf("[%s%s]", strings.Repeat("█", n), strings.Repeat("-", 60-n))
 		// Render spinner.
-		io.WriteString(writer, str+fmt.Sprintf("] %c", `-\|/`[i%4]))
+		io.WriteString(writer, str+fmt.Sprintf(" %c", `-\|/`[i%4]))
 		i++
 		return nil
 	}
