@@ -8,38 +8,35 @@ import (
 	"time"
 )
 
-// Render render a progress bar and return set percent func and stop func.
-func Render() (func(p float64), func()) {
+// NewRender receive duration for throttle, returns render function to rerender
+// progress bar.
+func NewRender(rate time.Duration) func(percent float64) {
 	var (
 		done bool
-		pg   float64
+		i    int
 	)
-	go func() {
-		for i, c := 0, 60; pg <= 1; i++ {
-			if done {
-				return
-			}
-			if pg == 1 {
-				done = true
-			}
-			// Render text and padding.
-			str := fmt.Sprintf("\r%.2f%%%s", pg*1e+2, strings.Repeat(" ", 10))
-			// Render bar.
-			n := int(pg * 1e+2 / (float64(100) / float64(c)))
-			str += "[" + strings.Repeat("█", n)
-			if n < c {
-				str += strings.Repeat("-", c-n)
-			}
-			str += "]"
-			// Render spinner.
-			str += fmt.Sprintf(" %c", `-\|/`[i%4])
-			io.WriteString(os.Stdout, str)
-			time.Sleep(time.Millisecond * 100)
+
+	return func(pc float64) {
+		<-time.Tick(rate)
+		if pc > 1 || pc < 0 {
+			panic(fmt.Errorf("percent %f invalid", pc))
 		}
-	}()
-	return func(p float64) {
-			pg = p
-		}, func() {
+		if done {
+			return
+		}
+		if pc == 1 {
 			done = true
 		}
+		// Render text and padding.
+		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", 10))
+		// Render bar.
+		n := int(pc * 1e+2 / (float64(100) / float64(60)))
+		str += "[" + strings.Repeat("█", n)
+		if n < 60 {
+			str += strings.Repeat("-", 60-n)
+		}
+		// Render spinner.
+		io.WriteString(os.Stdout, str+fmt.Sprintf("] %c", `-\|/`[i%4]))
+		i++
+	}
 }
