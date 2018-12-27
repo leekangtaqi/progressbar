@@ -14,10 +14,11 @@ func NewRender(writer io.Writer, rate time.Duration) func(percent float64) {
 	var (
 		done bool
 		i    int
+		throttle = time.Tick(rate)
 	)
 
 	return func(pc float64) {
-		<-time.Tick(rate)
+		<-throttle
 		if pc > 1 || pc < 0 {
 			panic(fmt.Errorf("percent %f invalid", pc))
 		}
