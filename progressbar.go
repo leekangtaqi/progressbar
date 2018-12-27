@@ -12,7 +12,7 @@ import (
 // function to rerender progress bar.
 func NewRender(writer io.Writer, rate time.Duration) func(percent float64) error {
 	var (
-		i    int
+		i        int
 		throttle = time.Tick(rate)
 	)
 
@@ -22,13 +22,11 @@ func NewRender(writer io.Writer, rate time.Duration) func(percent float64) error
 			return fmt.Errorf("percent %f invalid", pc)
 		}
 		// Render text and padding.
-		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", 10))
+		pl := 10 - (len(strconv.Itoa(int(pc*1e+2))) + 4)
+		str := fmt.Sprintf("\r%.2f%%%s", pc*1e+2, strings.Repeat(" ", pl))
 		// Render bar.
 		n := int(pc * 1e+2 / (float64(100) / float64(60)))
-		str += "[" + strings.Repeat("█", n)
-		if n < 60 {
-			str += strings.Repeat("-", 60-n)
-		}
+		str += fmt.Sprintf("[%s%s", strings.Repeat("█", n), strings.Repeat("-", 60-n))
 		// Render spinner.
 		io.WriteString(writer, str+fmt.Sprintf("] %c", `-\|/`[i%4]))
 		i++
