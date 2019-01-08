@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-// NewRender receive custom writer and duration for throttle, returns render
+// New receive custom writer and duration for throttle, returns render
 // function to rerender progress bar.
-func NewRender(writer io.Writer, rate time.Duration) func(float64) error {
+func New(writer io.Writer, rate time.Duration) func(float64) error {
 	var (
 		i        int
 		throttle = time.Tick(rate)
