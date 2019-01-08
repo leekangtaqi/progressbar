@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	render := NewRender(os.Stdout, time.Millisecond * 100)
+	render := progressbar.New(os.Stdout, time.Millisecond * 100)
 	render(0.012322)
 	render(0.022322)
 	render(0.035322)
